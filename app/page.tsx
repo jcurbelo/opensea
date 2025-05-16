@@ -2,6 +2,7 @@
 
 import { useCrossmintCheckout } from "@crossmint/client-sdk-react-ui";
 import dynamic from "next/dynamic";
+import React, { useState } from "react";
 
 function Skeleton() {
   return (
@@ -90,7 +91,7 @@ function CrossmintCheckout({ amount }: { amount: number }) {
   const isLoading = !order?.phase || !order?.payment;
 
   return (
-    <>
+    <div style={{ maxWidth: "400px", margin: "40px auto" }}>
       <div style={{ display: isLoading ? "none" : "block" }}>
         <DynamicCrossmintEmbeddedCheckout
           appearance={{
@@ -174,16 +175,100 @@ function CrossmintCheckout({ amount }: { amount: number }) {
       <div style={{ display: isLoading ? "block" : "none" }}>
         <Skeleton />
       </div>
-    </>
+    </div>
+  );
+}
+
+function AmountInput() {
+  const [amount, setAmount] = useState(1);
+  const [showCheckout, setShowCheckout] = useState(false);
+
+  if (showCheckout) {
+    return <CrossmintCheckout amount={amount} />;
+  }
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        setShowCheckout(true);
+      }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 24,
+        alignItems: "center",
+        borderRadius: 12,
+        padding: 32,
+        maxWidth: 400,
+        margin: "40px auto",
+        width: "100%",
+        boxSizing: "border-box",
+      }}
+    >
+      <label
+        htmlFor="amount-input"
+        style={{ color: "#fff", fontSize: 20, marginBottom: 8 }}
+      >
+        Buy
+      </label>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          fontSize: 32,
+          fontWeight: 600,
+          color: "#fff",
+          marginBottom: 16,
+        }}
+      >
+        <span style={{ marginRight: 4 }}>$</span>
+        <input
+          id="amount-input"
+          type="number"
+          min={1}
+          step={1}
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+          style={{
+            width: 80,
+            fontSize: 32,
+            fontWeight: 600,
+            background: "#151515",
+            color: "#fff",
+            border: "none",
+            borderRadius: 4,
+            padding: "4px 8px",
+            outline: "none",
+            textAlign: "right",
+          }}
+        />
+      </div>
+      <button
+        type="submit"
+        style={{
+          width: "100%",
+          background: "#3E82F7",
+          color: "#fff",
+          fontWeight: 600,
+          fontSize: 22,
+          border: "none",
+          borderRadius: 5,
+          padding: "16px 0",
+          cursor: "pointer",
+          marginTop: 16,
+        }}
+      >
+        Continue
+      </button>
+    </form>
   );
 }
 
 export default function Home() {
   return (
     <div style={{ backgroundColor: "#0E0E0E", minHeight: "100vh" }}>
-      <div style={{ maxWidth: "400px", margin: "40px auto" }}>
-        <CrossmintCheckout amount={1} />
-      </div>
+      <AmountInput />
     </div>
   );
 }
