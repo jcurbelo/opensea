@@ -1,10 +1,18 @@
 "use client";
 
-import { CrossmintEmbeddedCheckout } from "@crossmint/client-sdk-react-ui";
+import dynamic from "next/dynamic";
+
+const DynamicCrossmintEmbeddedCheckout = dynamic(
+  () =>
+    import("@crossmint/client-sdk-react-ui").then(
+      (mod) => mod.CrossmintEmbeddedCheckout
+    ),
+  { ssr: false }
+);
 
 function CrossmintCheckout({ amount }: { amount: number }) {
   return (
-    <CrossmintEmbeddedCheckout
+    <DynamicCrossmintEmbeddedCheckout
       appearance={{
         variables: {
           borderRadius: "5px",
